@@ -143,22 +143,6 @@ val prog3 =
   RApp(RVar("mktree"), (RVar("n20")))
   )))))))))
 
-val prog4 =
-  let("zero", RLam("s", RLam("z", vz)),
-  let("suc", RLam("n", RLam("s", RLam("z", RApp(vs, rapp2(vn, vs, vz))))),
-  let("five", RApp(RVar("suc"), RApp(RVar("suc")
-              , RApp(RVar("suc"), RApp(RVar("suc"), RApp(RVar("suc"), RVar("zero")))))),
-  let("add", RLam("n", RLam("m", RLam("s", RLam("z", rapp2(vn, vs, rapp2(vm, vs, vz)))))),
-  let("ten", rapp2(RVar("add"), RVar("five"), RVar("five")),
-  let("n15", rapp2(RVar("add"), RVar("five"), RVar("ten")),
-  let("n20", rapp2(RVar("add"), RVar("five"), RVar("n15")),
-  let("n25", rapp2(RVar("add"), RVar("five"), RVar("n20")),
-  let("mktree", RLam("n", RLam("node", RLam("l", rapp2(RVar("n")
-                     , RLam("x", rapp2(RVar("node"), RVar("x"), RVar("x")))
-                     , RVar("l"))))),
-  rapp2(RApp(RVar("mktree"), (RVar("n20"))), RLam("_", RLam("_", RVar("zero"))), RVar("zero"))
-  )))))))))
-
 fun run(t : rtm) : <div, exn> string
   show(nf0(elab(t)))
 
@@ -211,8 +195,8 @@ noinline fun timedDrop(x)
   println("drop time: " ++ show(diffnano/1000))
   ()
 
-val iter = 10
-val treesize = 23.int64
+val iter = 20
+val treesize = 20.int64
 
 fun main()
 
@@ -221,7 +205,6 @@ fun main()
   timed("Tree force", iter, frc, prog2)
   timed("Tree NF share", iter, frc, prog3)
   timed("Tree conv share", iter, fn(p){val v = eval0(elab(p)); conv0(v, v)}, prog3)
-  timed("Tree force share", iter, frc, prog4)
   timed ("Maptree 1/2", iter, fn (n) {maptree(mktree(n))}, treesize)
   timed ("Maptree 2/3", iter, fn (n) {maptree(maptree(mktree(n)))}, treesize)
   timed ("Maptree 3/4", iter, fn (n) {maptree(maptree(maptree(mktree(n))))}, treesize)

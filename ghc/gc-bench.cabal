@@ -21,7 +21,7 @@ executable gc-bench
       OverloadedStrings
       ScopedTypeVariables
       Strict
-  ghc-options: -O2 -fworker-wrapper-cbv -threaded -rtsopts "-with-rtsopts= -N8 -A16M -qb0 -s"
+  ghc-options: -O1 -fworker-wrapper-cbv -threaded -rtsopts
   build-depends:
       base
     , time

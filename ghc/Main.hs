@@ -1,8 +1,8 @@
 
-import Data.Time.Clock
 import Control.Monad
-import System.IO
 import Data.String
+import Data.Time.Clock
+import System.IO
 
 timed :: String -> Int -> (a -> IO b) -> a -> IO ()
 timed msg times act a = do
@@ -135,20 +135,6 @@ prog3 =
                  "n" $$ (RLam "x" $ "node" $$ "x" $$ "x") $$ "l") $
   "mktree" $$ "n20"
 
-prog4 :: RTm
-prog4 =
-  let_ "zero" (RLam "s" $ RLam "z" "z") $
-  let_ "suc" (RLam "n" $ RLam "s" $ RLam "z" $ "s" $$ ("n" $$ "s" $$ "z")) $
-  let_ "n5" ("suc" $$ ("suc" $$ ("suc" $$ ("suc" $$ ("suc" $$ "zero"))))) $
-  let_ "add" (RLam "n" $ RLam "m" $ RLam "s" $ RLam "z" $ "n" $$ "s" $$ ("m" $$ "s" $$ "z")) $
-  let_ "n10" ("add" $$ "n5" $$ "n5") $
-  let_ "n15" ("add" $$ "n5" $$ "n10") $
-  let_ "n20" ("add" $$ "n5" $$ "n15") $
-  let_ "n25" ("add" $$ "n5" $$ "n20") $
-  let_ "mktree" (RLam "n" $ RLam "node" $ RLam "l" $
-                  "n" $$ (RLam "x" $ "node" $$ "x" $$ "x") $$ "l") $
-  "mktree" $$ "n20" $$ (RLam "_" $ RLam "_" $ "zero") $$ "zero"
-
 run = show . nf0 . elab
 
 {-# noinline force #-}
@@ -178,7 +164,6 @@ main = do
   timed "Tree force" iter (pure . force) prog2
   timed "Tree NF share" iter (pure . force) prog3
   timed "Tree Conv share" iter (\t -> let v = eval0 (elab t) in pure $ conv0 v v) prog3
-  timed "Tree force share" iter (pure . force) prog4
 
   timed "Maptree 1/2" iter (\n -> pure $ seq (maptree (mktree n)) ()) 20
   timed "Maptree 2/3" iter (\n -> pure $ seq (maptree(maptree (mktree n))) ()) 20

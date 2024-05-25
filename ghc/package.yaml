@@ -13,7 +13,6 @@ ghc-options:
 - -fworker-wrapper-cbv
 - -threaded
 - -rtsopts
-- '"-with-rtsopts= -N8 -A16M -qb0 -s"'
 
 default-extensions:
 - BangPatterns
