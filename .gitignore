@@ -1,0 +1,15 @@
+*.hi
+*.o
+*.c
+*.cmi
+*.cmx
+./dist
+.stack-work/
+*#
+*.exe
+TAGS
+*.lock
+*.dump-simpl
+*.dump-cmm
+*.dump-stg
+/koka/.koka

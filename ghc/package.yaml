@@ -1,0 +1,27 @@
+
+name: gc-bench
+version: 0.1
+author: András Kovács <puttamalac@gmail.com>
+maintainer: András Kovács <puttamalac@gmail.com>
+
+dependencies:
+- base
+- time
+
+ghc-options:
+- -O1
+- -fworker-wrapper-cbv
+- -threaded
+- -rtsopts
+- '"-with-rtsopts= -N8 -A16M -qb0 -s"'
+
+default-extensions:
+- BangPatterns
+- BlockArguments
+- LambdaCase
+- OverloadedStrings
+- ScopedTypeVariables
+- Strict
+
+executable:
+  main: Main.hs
