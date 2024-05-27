@@ -13,9 +13,12 @@ timed msg times act a = do
   replicateM_ times $ dot =<< act a
   t1 <- getCurrentTime
   let pad = replicate (20 - length msg) ' '
-  putStrLn $ msg ++ ":" ++ pad ++ show (diffUTCTime t1 t0 / fromIntegral times)
+  putStrLn $ msg ++ ":" ++ pad
+    ++ show ((nominalDiffTimeToSeconds $ diffUTCTime t1 t0 / fromIntegral times) * 1000000) ++ " us\n"  
   hSetBuffering stdout buffering
 {-# noinline timed #-}
+
+data StrictList a = Nil | Cons a (StrictList a)
 
 data RTm
   = RVar String
@@ -28,21 +31,21 @@ data Tm
   | Lam String Tm
   deriving Show
 
-elabVar :: [String] -> String -> Int
+elabVar :: StrictList String -> String -> Int
 elabVar ns x = case ns of
-  x':ns | x == x' -> 0
-        | True    -> elabVar ns x + 1
+  Cons x' ns | x == x' -> 0
+             | True    -> elabVar ns x + 1
   _ -> undefined
 
-elab' :: [String] -> RTm -> Tm
+elab' :: StrictList String -> RTm -> Tm
 elab' ns = \case
   RVar x   -> Var (elabVar ns x)
   RApp t u -> App (elab' ns t) (elab' ns u)
-  RLam x t -> Lam x (elab' (x:ns) t)
+  RLam x t -> Lam x (elab' (Cons x ns) t)
 
-elab = elab' []
+elab = elab' Nil
 
-data Env = Nil | Cons Val Env
+type Env = StrictList Val
 
 data Val =
     VVar Int
@@ -100,11 +103,12 @@ prog =
   let_ "n10" ("add" $$ "n5" $$ "n5") $
   let_ "n15" ("add" $$ "n5" $$ "n10") $
   let_ "n20" ("add" $$ "n5" $$ "n15") $
+  let_ "n25" ("add" $$ "n5" $$ "n20") $
   let_ "leaf" (RLam "n" $ RLam "l" $ "l") $
   let_ "node" (RLam "t1" $ RLam "t2" $ RLam "n" $ RLam "l" $ "n" $$ ("t1" $$ "n" $$ "l")
                                                                  $$ ("t2" $$ "n" $$ "l")) $
   let_ "mktree" (RLam "n" $ "n" $$ (RLam "t" $ "node" $$ "t" $$ "t") $$ "leaf") $
-  "mktree" $$ "n20"
+  "mktree" $$ "n25"
 
 prog2 :: RTm
 prog2 =
@@ -115,11 +119,12 @@ prog2 =
   let_ "n10" ("add" $$ "n5" $$ "n5") $
   let_ "n15" ("add" $$ "n5" $$ "n10") $
   let_ "n20" ("add" $$ "n5" $$ "n15") $
+  let_ "n25" ("add" $$ "n5" $$ "n20") $
   let_ "leaf" (RLam "n" $ RLam "l" $ "l") $
   let_ "node" (RLam "t1" $ RLam "t2" $ RLam "n" $ RLam "l" $ "n" $$ ("t1" $$ "n" $$ "l")
                                                                  $$ ("t2" $$ "n" $$ "l")) $
   let_ "mktree" (RLam "n" $ "n" $$ (RLam "t" $ "node" $$ "t" $$ "t") $$ "leaf") $
-  "mktree" $$ "n20" $$ (RLam "_" $ RLam "_" $ "zero") $$ "zero"
+  "mktree" $$ "n25" $$ (RLam "_" $ RLam "_" $ "zero") $$ "zero"
 
 prog3 :: RTm
 prog3 =
@@ -133,7 +138,7 @@ prog3 =
   let_ "n25" ("add" $$ "n5" $$ "n20") $
   let_ "mktree" (RLam "n" $ RLam "node" $ RLam "l" $
                  "n" $$ (RLam "x" $ "node" $$ "x" $$ "x") $$ "l") $
-  "mktree" $$ "n20"
+  "mktree" $$ "n25"
 
 run = show . nf0 . elab
 
@@ -156,7 +161,7 @@ mktree n = go n n where
   go _ 0 = Leaf 0
   go n m = Node (go (n - 1) (m - 1)) (go (m - 1) (n - 1))
 
-iter = 30 :: Int
+iter = 20 :: Int
 
 main = do
   timed "Tree NF" iter (pure . force) prog
@@ -165,7 +170,7 @@ main = do
   timed "Tree NF share" iter (pure . force) prog3
   timed "Tree Conv share" iter (\t -> let v = eval0 (elab t) in pure $ conv0 v v) prog3
 
-  timed "Maptree 1/2" iter (\n -> pure $ seq (maptree (mktree n)) ()) 20
-  timed "Maptree 2/3" iter (\n -> pure $ seq (maptree(maptree (mktree n))) ()) 20
-  timed "Maptree 3/4" iter (\n -> pure $ seq (maptree(maptree(maptree (mktree n)))) ()) 20
-  timed "Maptree 4/5" iter (\n -> pure $ seq (maptree(maptree(maptree(maptree(mktree n))))) ()) 20
+  timed "Maptree 1/2" iter (\n -> pure $ seq (maptree (mktree n)) ()) 25
+  timed "Maptree 2/3" iter (\n -> pure $ seq (maptree(maptree (mktree n))) ()) 25
+  timed "Maptree 3/4" iter (\n -> pure $ seq (maptree(maptree(maptree (mktree n)))) ()) 25
+  timed "Maptree 4/5" iter (\n -> pure $ seq (maptree(maptree(maptree(maptree(mktree n))))) ()) 25

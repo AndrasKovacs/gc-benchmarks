@@ -42,7 +42,7 @@ type value
   VApp{t : value; u : value}
   VLam{x : string; e : list<value>; t : tm}
 
-fun vvar(e : list<value>, x : int64) : value
+fun vvar(^e : list<value>, x : int64) : value
   match e
     Cons(v, e) -> if x == 0.int64 then v else vvar(e, x - 1.int64)
     _          -> VVar(0.int64) // dummy
@@ -52,10 +52,10 @@ fun eval(e : list<value>, t : tm) : <div> value
     Var(x) -> vvar(e, x)
     App(t, u) -> match eval(e, t)
       VLam(_, e', t) -> eval(Cons(eval(e, u), e'), t)
-      t              -> {val uv = eval(e, u); VApp(t, uv)}
+      t              -> {val uv = eval(e, u); VApp(t, uv)} // prevent TRMC here
     Lam(x, t) -> VLam(x, e, t)
 
-fun conv(l : int64, t : value, t' : value) : <div> bool
+fun conv(l : int64, ^t : value, ^t' : value) : <div> bool
   match (t, t')
     (VVar(x)   , VVar(x')    ) ->
       x == x'
@@ -104,12 +104,13 @@ val prog =
   let("ten", rapp2(RVar("add"), RVar("five"), RVar("five")),
   let("n15", rapp2(RVar("add"), RVar("five"), RVar("ten")),
   let("n20", rapp2(RVar("add"), RVar("five"), RVar("n15")),
+  let("n25", rapp2(RVar("add"), RVar("five"), RVar("n20")),
   let("leaf", RLam("n", RLam("l", RVar("l"))),
   let("node", RLam("t1", RLam("t2", RLam("n", RLam("l",
               rapp2(vn, rapp2(RVar("t1"), vn, vl), rapp2(RVar("t2"), vn, vl)))))),
   let("mktree", RLam("n", rapp2(vn, (RLam("t", rapp2(RVar("node"), vt, vt))), RVar("leaf"))),
-  RApp(RVar("mktree"), (RVar("n20")))
-  ))))))))))
+  RApp(RVar("mktree"), (RVar("n25")))
+  )))))))))))
 
 val prog2 =
   let("zero", RLam("s", RLam("z", vz)),
@@ -120,12 +121,13 @@ val prog2 =
   let("ten", rapp2(RVar("add"), RVar("five"), RVar("five")),
   let("n15", rapp2(RVar("add"), RVar("five"), RVar("ten")),
   let("n20", rapp2(RVar("add"), RVar("five"), RVar("n15")),
+  let("n25", rapp2(RVar("add"), RVar("five"), RVar("n20")),
   let("leaf", RLam("n", RLam("l", RVar("l"))),
   let("node", RLam("t1", RLam("t2", RLam("n", RLam("l",
               rapp2(vn, rapp2(RVar("t1"), vn, vl), rapp2(RVar("t2"), vn, vl)))))),
   let("mktree", RLam("n", rapp2(vn, (RLam("t", rapp2(RVar("node"), vt, vt))), RVar("leaf"))),
-  rapp2(RApp(RVar("mktree"), (RVar("n20"))), RLam("_", RLam("_", RVar("leaf"))), RVar("leaf"))
-  ))))))))))
+  rapp2(RApp(RVar("mktree"), (RVar("n25"))), RLam("_", RLam("_", RVar("leaf"))), RVar("leaf"))
+  )))))))))))
 
 val prog3 =
   let("zero", RLam("s", RLam("z", vz)),
@@ -140,7 +142,7 @@ val prog3 =
   let("mktree", RLam("n", RLam("node", RLam("l", rapp2(RVar("n")
                      , RLam("x", rapp2(RVar("node"), RVar("x"), RVar("x")))
                      , RVar("l"))))),
-  RApp(RVar("mktree"), (RVar("n20")))
+  RApp(RVar("mktree"), (RVar("n25")))
   )))))))))
 
 fun run(t : rtm) : <div, exn> string
@@ -196,7 +198,7 @@ noinline fun timedDrop(x)
   ()
 
 val iter = 20
-val treesize = 20.int64
+val treesize = 25.int64
 
 fun main()
 
