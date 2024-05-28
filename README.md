@@ -67,109 +67,111 @@ RSS (resident set size) is reported from `/usr/bin/time -v` in all cases. I used
 `/usr/bin/time -v` on the generated executables in the `.stack` and `.koka`
 directories.
 
-### GHC
+RESULTS TO BE UPDATED
 
-**GHC +RTS -N8 -A16M -qb0 -s** (parallel copy, 128M arena)
+<!-- ### GHC -->
 
-|   |   |
-|---|---|
-|RSS:                 |352M |
-|Tree NF:             |0.0585551657 s |
-|Tree Conv:           |0.1000499138 s |
-|Tree force:          |0.0308369736 s |
-|Tree NF share:       |0.0085617557 s |
-|Tree Conv share:     |0.0034091996 s |
-|Maptree 1/2:         |0.0093272052 s |
-|Maptree 2/3:         |0.0187194441 s |
-|Maptree 3/4:         |0.0269395563 s |
-|Maptree 4/5:         |0.0362283250 s |
+<!-- **GHC +RTS -N8 -A16M -qb0 -s** (parallel copy, 128M arena) -->
 
-**GHC +RTS -N8 -A8M -qb0 -s** (parallel copy, 64M arena)
+<!-- |   |   | -->
+<!-- |---|---| -->
+<!-- |RSS:                 |352M | -->
+<!-- |Tree NF:             |0.0585551657 s | -->
+<!-- |Tree Conv:           |0.1000499138 s | -->
+<!-- |Tree force:          |0.0308369736 s | -->
+<!-- |Tree NF share:       |0.0085617557 s | -->
+<!-- |Tree Conv share:     |0.0034091996 s | -->
+<!-- |Maptree 1/2:         |0.0093272052 s | -->
+<!-- |Maptree 2/3:         |0.0187194441 s | -->
+<!-- |Maptree 3/4:         |0.0269395563 s | -->
+<!-- |Maptree 4/5:         |0.0362283250 s | -->
 
-|   |   |
-|---|---|
-|RSS:                 |285M|
-|Tree NF:             |0.073256601 s|
-|Tree Conv:           |0.098881875 s|
-|Tree force:          |0.031688582 s|
-|Tree NF share:       |0.023207658 s|
-|Tree Conv share:     |0.003229039 s|
-|Maptree 1/2:         |0.015514388 s|
-|Maptree 2/3:         |0.027273184 s|
-|Maptree 3/4:         |0.038060693 s|
-|Maptree 4/5:         |0.048828525 s|
+<!-- **GHC +RTS -N8 -A8M -qb0 -s** (parallel copy, 64M arena) -->
 
-**GHC +RTS -N8 -A4M -qb0 -s** (parallel copy, 32M arena)
+<!-- |   |   | -->
+<!-- |---|---| -->
+<!-- |RSS:                 |285M| -->
+<!-- |Tree NF:             |0.073256601 s| -->
+<!-- |Tree Conv:           |0.098881875 s| -->
+<!-- |Tree force:          |0.031688582 s| -->
+<!-- |Tree NF share:       |0.023207658 s| -->
+<!-- |Tree Conv share:     |0.003229039 s| -->
+<!-- |Maptree 1/2:         |0.015514388 s| -->
+<!-- |Maptree 2/3:         |0.027273184 s| -->
+<!-- |Maptree 3/4:         |0.038060693 s| -->
+<!-- |Maptree 4/5:         |0.048828525 s| -->
 
-|   |   |
-|---|---|
-|RSS:                | 241M|
-|Tree NF:            | 0.0770440263 s|
-|Tree Conv:          | 0.1035009512 s|
-|Tree force:         | 0.0309666622 s|
-|Tree NF share:      | 0.0292150692 s|
-|Tree Conv share:    | 0.0033002176 s|
-|Maptree 1/2:        | 0.0157076319 s|
-|Maptree 2/3:        | 0.0286112121 s|
-|Maptree 3/4:        | 0.0429614781 s|
-|Maptree 4/5:        | 0.0539486119 s|
+<!-- **GHC +RTS -N8 -A4M -qb0 -s** (parallel copy, 32M arena) -->
 
-**GHC +RTS -s** (default: no parallel copying, 4M arena)
+<!-- |   |   | -->
+<!-- |---|---| -->
+<!-- |RSS:                | 241M| -->
+<!-- |Tree NF:            | 0.0770440263 s| -->
+<!-- |Tree Conv:          | 0.1035009512 s| -->
+<!-- |Tree force:         | 0.0309666622 s| -->
+<!-- |Tree NF share:      | 0.0292150692 s| -->
+<!-- |Tree Conv share:    | 0.0033002176 s| -->
+<!-- |Maptree 1/2:        | 0.0157076319 s| -->
+<!-- |Maptree 2/3:        | 0.0286112121 s| -->
+<!-- |Maptree 3/4:        | 0.0429614781 s| -->
+<!-- |Maptree 4/5:        | 0.0539486119 s| -->
 
-|   |   |
-|---|---|
-|RSS:                 |230M|
-|Tree NF:             |0.178919555 s|
-|Tree Conv:           |0.178580515 s|
-|Tree force:          |0.030624470 s|
-|Tree NF share:       |0.087825472 s|
-|Tree Conv share:     |0.003207482 s|
-|Maptree 1/2:         |0.051536897 s|
-|Maptree 2/3:         |0.094009938 s|
-|Maptree 3/4:         |0.132026914 s|
-|Maptree 4/5:         |0.166693688 s|
+<!-- **GHC +RTS -s** (default: no parallel copying, 4M arena) -->
 
-**GHC +RTS -N1 -G1 -A128M -s** (semispace collector, single threaded, 128M minimum heap)
+<!-- |   |   | -->
+<!-- |---|---| -->
+<!-- |RSS:                 |230M| -->
+<!-- |Tree NF:             |0.178919555 s| -->
+<!-- |Tree Conv:           |0.178580515 s| -->
+<!-- |Tree force:          |0.030624470 s| -->
+<!-- |Tree NF share:       |0.087825472 s| -->
+<!-- |Tree Conv share:     |0.003207482 s| -->
+<!-- |Maptree 1/2:         |0.051536897 s| -->
+<!-- |Maptree 2/3:         |0.094009938 s| -->
+<!-- |Maptree 3/4:         |0.132026914 s| -->
+<!-- |Maptree 4/5:         |0.166693688 s| -->
 
-|   |   |
-|---|---|
-|RSS:                 |348M|
-|Tree NF:             |0.1085490721 s|
-|Tree Conv:           |0.2061490365 s|
-|Tree force:          |0.0323833961 s|
-|Tree NF share:       |0.0229806656 s|
-|Tree Conv share:     |0.0032150955 s|
-|Maptree 1/2:         |0.0111321662 s|
-|Maptree 2/3:         |0.0283437464 s|
-|Maptree 3/4:         |0.0420059896 s|
-|Maptree 4/5:         |0.0512852726 s|
+<!-- **GHC +RTS -N1 -G1 -A128M -s** (semispace collector, single threaded, 128M minimum heap) -->
 
-**GHC +RTS -N1 -G1 -A256M -s** (semispace collector, single threaded, 256M minimum heap)
+<!-- |   |   | -->
+<!-- |---|---| -->
+<!-- |RSS:                 |348M| -->
+<!-- |Tree NF:             |0.1085490721 s| -->
+<!-- |Tree Conv:           |0.2061490365 s| -->
+<!-- |Tree force:          |0.0323833961 s| -->
+<!-- |Tree NF share:       |0.0229806656 s| -->
+<!-- |Tree Conv share:     |0.0032150955 s| -->
+<!-- |Maptree 1/2:         |0.0111321662 s| -->
+<!-- |Maptree 2/3:         |0.0283437464 s| -->
+<!-- |Maptree 3/4:         |0.0420059896 s| -->
+<!-- |Maptree 4/5:         |0.0512852726 s| -->
 
-|   |   |
-|---|---|
-|RSS:                 |427M|
-|Tree NF:             |0.0897052893 s|
-|Tree Conv:           |0.1602031396 s|
-|Tree force:          |0.0301616668 s|
-|Tree NF share:       |0.0140957306 s|
-|Tree Conv share:     |0.0032227575 s|
-|Maptree 1/2:         |0.0114329003 s|
-|Maptree 2/3:         |0.0238688409 s|
-|Maptree 3/4:         |0.0340323339 s|
-|Maptree 4/5:         |0.0433066331 s|
+<!-- **GHC +RTS -N1 -G1 -A256M -s** (semispace collector, single threaded, 256M minimum heap) -->
 
-### Koka
+<!-- |   |   | -->
+<!-- |---|---| -->
+<!-- |RSS:                 |427M| -->
+<!-- |Tree NF:             |0.0897052893 s| -->
+<!-- |Tree Conv:           |0.1602031396 s| -->
+<!-- |Tree force:          |0.0301616668 s| -->
+<!-- |Tree NF share:       |0.0140957306 s| -->
+<!-- |Tree Conv share:     |0.0032227575 s| -->
+<!-- |Maptree 1/2:         |0.0114329003 s| -->
+<!-- |Maptree 2/3:         |0.0238688409 s| -->
+<!-- |Maptree 3/4:         |0.0340323339 s| -->
+<!-- |Maptree 4/5:         |0.0433066331 s| -->
 
-|   |   |
-|---|---|
-|RSS:                 |101M|
-|Tree NF:             |0.133963 s|
-|Tree conv:           |0.221093 s|
-|Tree force:          |0.100207 s|
-|Tree NF share:       |0.029871 s|
-|Tree conv share:     |0.010162 s|
-|Maptree 1/2:         |0.018467 s|
-|Maptree 2/3:         |0.022434 s|
-|Maptree 3/4:         |0.027088 s|
-|Maptree 4/5:         |0.031958 s|
+<!-- ### Koka -->
+
+<!-- |   |   | -->
+<!-- |---|---| -->
+<!-- |RSS:                 |101M| -->
+<!-- |Tree NF:             |0.133963 s| -->
+<!-- |Tree conv:           |0.221093 s| -->
+<!-- |Tree force:          |0.100207 s| -->
+<!-- |Tree NF share:       |0.029871 s| -->
+<!-- |Tree conv share:     |0.010162 s| -->
+<!-- |Maptree 1/2:         |0.018467 s| -->
+<!-- |Maptree 2/3:         |0.022434 s| -->
+<!-- |Maptree 3/4:         |0.027088 s| -->
+<!-- |Maptree 4/5:         |0.031958 s| -->

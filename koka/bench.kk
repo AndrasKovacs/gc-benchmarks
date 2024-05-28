@@ -95,61 +95,67 @@ inline val vc = RVar("c")
 inline val vl = RVar("l")
 inline val vr = RVar("r")
 
-val prog =
+val prog = elab(
   let("zero", RLam("s", RLam("z", vz)),
   let("suc", RLam("n", RLam("s", RLam("z", RApp(vs, rapp2(vn, vs, vz))))),
-  let("five", RApp(RVar("suc"), RApp(RVar("suc")
+  let("n3", RApp(RVar("suc"), RApp(RVar("suc"), RApp(RVar("suc"), RVar("zero")))),
+  let("n5", RApp(RVar("suc"), RApp(RVar("suc")
               , RApp(RVar("suc"), RApp(RVar("suc"), RApp(RVar("suc"), RVar("zero")))))),
   let("add", RLam("n", RLam("m", RLam("s", RLam("z", rapp2(vn, vs, rapp2(vm, vs, vz)))))),
-  let("ten", rapp2(RVar("add"), RVar("five"), RVar("five")),
-  let("n15", rapp2(RVar("add"), RVar("five"), RVar("ten")),
-  let("n20", rapp2(RVar("add"), RVar("five"), RVar("n15")),
-  let("n25", rapp2(RVar("add"), RVar("five"), RVar("n20")),
+  let("n10", rapp2(RVar("add"), RVar("n5"), RVar("n5")),
+  let("n15", rapp2(RVar("add"), RVar("n5"), RVar("n10")),
+  let("n20", rapp2(RVar("add"), RVar("n5"), RVar("n15")),
+  let("n23", rapp2(RVar("add"), RVar("n3"), RVar("n20")),
+  let("n25", rapp2(RVar("add"), RVar("n5"), RVar("n20")),
   let("leaf", RLam("n", RLam("l", RVar("l"))),
   let("node", RLam("t1", RLam("t2", RLam("n", RLam("l",
               rapp2(vn, rapp2(RVar("t1"), vn, vl), rapp2(RVar("t2"), vn, vl)))))),
   let("mktree", RLam("n", rapp2(vn, (RLam("t", rapp2(RVar("node"), vt, vt))), RVar("leaf"))),
-  RApp(RVar("mktree"), (RVar("n25")))
-  )))))))))))
+  RApp(RVar("mktree"), treeSize)
+  ))))))))))))))
 
-val prog2 =
+val prog2 = elab(
   let("zero", RLam("s", RLam("z", vz)),
   let("suc", RLam("n", RLam("s", RLam("z", RApp(vs, rapp2(vn, vs, vz))))),
-  let("five", RApp(RVar("suc"), RApp(RVar("suc")
+  let("n3", RApp(RVar("suc"), RApp(RVar("suc"), RApp(RVar("suc"), RVar("zero")))),
+  let("n5", RApp(RVar("suc"), RApp(RVar("suc")
               , RApp(RVar("suc"), RApp(RVar("suc"), RApp(RVar("suc"), RVar("zero")))))),
   let("add", RLam("n", RLam("m", RLam("s", RLam("z", rapp2(vn, vs, rapp2(vm, vs, vz)))))),
-  let("ten", rapp2(RVar("add"), RVar("five"), RVar("five")),
-  let("n15", rapp2(RVar("add"), RVar("five"), RVar("ten")),
-  let("n20", rapp2(RVar("add"), RVar("five"), RVar("n15")),
-  let("n25", rapp2(RVar("add"), RVar("five"), RVar("n20")),
+  let("n10", rapp2(RVar("add"), RVar("n5"), RVar("n5")),
+  let("n15", rapp2(RVar("add"), RVar("n5"), RVar("n10")),
+  let("n20", rapp2(RVar("add"), RVar("n5"), RVar("n15")),
+  let("n23", rapp2(RVar("add"), RVar("n3"), RVar("n20")),
+  let("n25", rapp2(RVar("add"), RVar("n5"), RVar("n20")),
   let("leaf", RLam("n", RLam("l", RVar("l"))),
   let("node", RLam("t1", RLam("t2", RLam("n", RLam("l",
               rapp2(vn, rapp2(RVar("t1"), vn, vl), rapp2(RVar("t2"), vn, vl)))))),
   let("mktree", RLam("n", rapp2(vn, (RLam("t", rapp2(RVar("node"), vt, vt))), RVar("leaf"))),
-  rapp2(RApp(RVar("mktree"), (RVar("n25"))), RLam("_", RLam("_", RVar("leaf"))), RVar("leaf"))
-  )))))))))))
+  rapp2(RApp(RVar("mktree"), treeSize), RLam("_", RLam("_", RVar("leaf"))), RVar("leaf"))
+  ))))))))))))))
 
-val prog3 =
+val prog3 = elab(
   let("zero", RLam("s", RLam("z", vz)),
   let("suc", RLam("n", RLam("s", RLam("z", RApp(vs, rapp2(vn, vs, vz))))),
-  let("five", RApp(RVar("suc"), RApp(RVar("suc")
+  let("n3", RApp(RVar("suc"), RApp(RVar("suc"), RApp(RVar("suc"), RVar("zero")))),
+  let("n5", RApp(RVar("suc"), RApp(RVar("suc")
               , RApp(RVar("suc"), RApp(RVar("suc"), RApp(RVar("suc"), RVar("zero")))))),
   let("add", RLam("n", RLam("m", RLam("s", RLam("z", rapp2(vn, vs, rapp2(vm, vs, vz)))))),
-  let("ten", rapp2(RVar("add"), RVar("five"), RVar("five")),
-  let("n15", rapp2(RVar("add"), RVar("five"), RVar("ten")),
-  let("n20", rapp2(RVar("add"), RVar("five"), RVar("n15")),
-  let("n25", rapp2(RVar("add"), RVar("five"), RVar("n20")),
+  let("n10", rapp2(RVar("add"), RVar("n5"), RVar("n5")),
+  let("n15", rapp2(RVar("add"), RVar("n5"), RVar("n10")),
+  let("n20", rapp2(RVar("add"), RVar("n5"), RVar("n15")),
+  let("n23", rapp2(RVar("add"), RVar("n3"), RVar("n20")),
+  let("n25", rapp2(RVar("add"), RVar("n5"), RVar("n20")),
   let("mktree", RLam("n", RLam("node", RLam("l", rapp2(RVar("n")
                      , RLam("x", rapp2(RVar("node"), RVar("x"), RVar("x")))
                      , RVar("l"))))),
-  RApp(RVar("mktree"), (RVar("n25")))
-  )))))))))
+  RApp(RVar("mktree"), treeSize)
+  ))))))))))))
 
 fun run(t : rtm) : <div, exn> string
   show(nf0(elab(t)))
 
-fun frc(t : rtm) : <div, exn> int
-  match nf0(elab(t))
+fun frc(t : tm) : <div, exn> int
+  match nf0(t)
     Lam(_) -> 0
     _      -> 1
 
@@ -165,9 +171,9 @@ fun maptree(t : tree) : tree
 fun mktree(n : int64) : <div> tree
   fun go(n : int64, m : int64) : <div> tree
     if n == 0.int64 then
-      Leaf(0.int64)
+      Leaf(m)
     else if m == 0.int64 then
-      Leaf(0.int64)
+      Leaf(m)
     else Node(go(n - 1.int64, m - 1.int64),
               go(m - 1.int64, n - 1.int64))
   go(n, n)
@@ -198,19 +204,20 @@ noinline fun timedDrop(x)
   ()
 
 val iter = 20
-val treesize = 25.int64
+val mapTreeSize = 20.int64
+val treeSize = RVar("n25")
 
 fun main()
 
-  timed("Tree NF"  , iter, frc, prog)
-  timed("Tree conv", iter, fn(p){val v = eval0(elab(p)); conv0(v, v)}, prog)
-  timed("Tree force", iter, frc, prog2)
-  timed("Tree NF share", iter, frc, prog3)
-  timed("Tree conv share", iter, fn(p){val v = eval0(elab(p)); conv0(v, v)}, prog3)
-  timed ("Maptree 1/2", iter, fn (n) {maptree(mktree(n))}, treesize)
-  timed ("Maptree 2/3", iter, fn (n) {maptree(maptree(mktree(n)))}, treesize)
-  timed ("Maptree 3/4", iter, fn (n) {maptree(maptree(maptree(mktree(n))))}, treesize)
-  timed ("Maptree 4/5", iter, fn (n) {maptree(maptree(maptree(maptree(mktree(n)))))}, treesize)
+  timed("Tree NF", iter, frc, prog)
+  // timed("Tree conv", iter, fn(p){val v = eval0(p); conv0(v, v)}, prog)
+  // timed("Tree force", iter, frc, prog2)
+  // timed("Tree NF share", iter, frc, prog3)
+  // timed("Tree conv share", iter, fn(p){val v = eval0(p); conv0(v, v)}, prog3)
+  // timed ("Maptree 1/2", iter, fn (n) {maptree(mktree(n))}, mapTreeSize)
+  // timed ("Maptree 2/3", iter, fn (n) {maptree(maptree(mktree(n)))}, mapTreeSize)
+  // timed ("Maptree 3/4", iter, fn (n) {maptree(maptree(maptree(mktree(n))))}, mapTreeSize)
+  // timed ("Maptree 4/5", iter, fn (n) {maptree(maptree(maptree(maptree(mktree(n)))))}, mapTreeSize)
 
   // timedDrop(mktree(20.int64))
   // timedDrop(mktree(21.int64))

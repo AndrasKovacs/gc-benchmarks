@@ -14,7 +14,7 @@ timed msg times act a = do
   t1 <- getCurrentTime
   let pad = replicate (20 - length msg) ' '
   putStrLn $ msg ++ ":" ++ pad
-    ++ show ((nominalDiffTimeToSeconds $ diffUTCTime t1 t0 / fromIntegral times) * 1000000) ++ " us\n"  
+    ++ show ((nominalDiffTimeToSeconds $ diffUTCTime t1 t0 / fromIntegral times) * 1000000) ++ " us\n"
   hSetBuffering stdout buffering
 {-# noinline timed #-}
 
@@ -24,6 +24,7 @@ data RTm
   = RVar String
   | RApp RTm RTm
   | RLam String RTm
+
 
 data Tm
   = Var Int
@@ -94,56 +95,62 @@ let_ :: String -> RTm -> RTm -> RTm
 let_ x t u = RLam x u $$ t
 {-# inline let_ #-}
 
-prog :: RTm
-prog =
+prog :: Tm
+prog = elab $
   let_ "zero" (RLam "s" $ RLam "z" "z") $
   let_ "suc" (RLam "n" $ RLam "s" $ RLam "z" $ "s" $$ ("n" $$ "s" $$ "z")) $
+  let_ "n3"  ("suc" $$ ("suc" $$ ("suc" $$ "zero"))) $
   let_ "n5" ("suc" $$ ("suc" $$ ("suc" $$ ("suc" $$ ("suc" $$ "zero"))))) $
   let_ "add" (RLam "n" $ RLam "m" $ RLam "s" $ RLam "z" $ "n" $$ "s" $$ ("m" $$ "s" $$ "z")) $
   let_ "n10" ("add" $$ "n5" $$ "n5") $
   let_ "n15" ("add" $$ "n5" $$ "n10") $
   let_ "n20" ("add" $$ "n5" $$ "n15") $
+  let_ "n23" ("add" $$ "n3" $$ "n20") $
   let_ "n25" ("add" $$ "n5" $$ "n20") $
   let_ "leaf" (RLam "n" $ RLam "l" $ "l") $
   let_ "node" (RLam "t1" $ RLam "t2" $ RLam "n" $ RLam "l" $ "n" $$ ("t1" $$ "n" $$ "l")
                                                                  $$ ("t2" $$ "n" $$ "l")) $
   let_ "mktree" (RLam "n" $ "n" $$ (RLam "t" $ "node" $$ "t" $$ "t") $$ "leaf") $
-  "mktree" $$ "n25"
+  "mktree" $$ treeSize
 
-prog2 :: RTm
-prog2 =
+prog2 :: Tm
+prog2 = elab $
   let_ "zero" (RLam "s" $ RLam "z" "z") $
   let_ "suc" (RLam "n" $ RLam "s" $ RLam "z" $ "s" $$ ("n" $$ "s" $$ "z")) $
-  let_ "n5" ("suc" $$ ("suc" $$ ("suc" $$ ("suc" $$ ("suc" $$ "zero"))))) $
+  let_ "n3"  ("suc" $$ ("suc" $$ ("suc" $$ "zero"))) $
+  let_ "n5"  ("suc" $$ ("suc" $$ ("suc" $$ ("suc" $$ ("suc" $$ "zero"))))) $
   let_ "add" (RLam "n" $ RLam "m" $ RLam "s" $ RLam "z" $ "n" $$ "s" $$ ("m" $$ "s" $$ "z")) $
   let_ "n10" ("add" $$ "n5" $$ "n5") $
   let_ "n15" ("add" $$ "n5" $$ "n10") $
   let_ "n20" ("add" $$ "n5" $$ "n15") $
+  let_ "n23" ("add" $$ "n3" $$ "n20") $
   let_ "n25" ("add" $$ "n5" $$ "n20") $
   let_ "leaf" (RLam "n" $ RLam "l" $ "l") $
   let_ "node" (RLam "t1" $ RLam "t2" $ RLam "n" $ RLam "l" $ "n" $$ ("t1" $$ "n" $$ "l")
                                                                  $$ ("t2" $$ "n" $$ "l")) $
   let_ "mktree" (RLam "n" $ "n" $$ (RLam "t" $ "node" $$ "t" $$ "t") $$ "leaf") $
-  "mktree" $$ "n25" $$ (RLam "_" $ RLam "_" $ "zero") $$ "zero"
+  "mktree" $$ treeSize $$ (RLam "_" $ RLam "_" $ "zero") $$ "zero"
 
-prog3 :: RTm
-prog3 =
+prog3 :: Tm
+prog3 = elab $
   let_ "zero" (RLam "s" $ RLam "z" "z") $
   let_ "suc" (RLam "n" $ RLam "s" $ RLam "z" $ "s" $$ ("n" $$ "s" $$ "z")) $
-  let_ "n5" ("suc" $$ ("suc" $$ ("suc" $$ ("suc" $$ ("suc" $$ "zero"))))) $
+  let_ "n5"  ("suc" $$ ("suc" $$ ("suc" $$ ("suc" $$ ("suc" $$ "zero"))))) $
+  let_ "n3"  ("suc" $$ ("suc" $$ ("suc" $$ "zero"))) $
   let_ "add" (RLam "n" $ RLam "m" $ RLam "s" $ RLam "z" $ "n" $$ "s" $$ ("m" $$ "s" $$ "z")) $
   let_ "n10" ("add" $$ "n5" $$ "n5") $
   let_ "n15" ("add" $$ "n5" $$ "n10") $
   let_ "n20" ("add" $$ "n5" $$ "n15") $
+  let_ "n23" ("add" $$ "n3" $$ "n20") $
   let_ "n25" ("add" $$ "n5" $$ "n20") $
   let_ "mktree" (RLam "n" $ RLam "node" $ RLam "l" $
                  "n" $$ (RLam "x" $ "node" $$ "x" $$ "x") $$ "l") $
-  "mktree" $$ "n25"
+  "mktree" $$ treeSize
 
 run = show . nf0 . elab
 
 {-# noinline force #-}
-force t = case nf0 (elab t) of
+force t = case nf0 t of
   Lam{} -> 0 :: Int
   _     -> 1 :: Int
 
@@ -157,20 +164,31 @@ maptree = \case
 
 mktree :: Int -> Tree
 mktree n = go n n where
-  go 0 _ = Leaf 0
-  go _ 0 = Leaf 0
+  go 0 x = Leaf x
+  go x 0 = Leaf x
   go n m = Node (go (n - 1) (m - 1)) (go (m - 1) (n - 1))
 
+------------------------------------------------------------
+
+iter :: Int
 iter = 20 :: Int
+
+treeSize :: RTm
+treeSize = "n23"
+
+mapTreeSize :: Int
+mapTreeSize = 20
+
+------------------------------------------------------------
 
 main = do
   timed "Tree NF" iter (pure . force) prog
-  timed "Tree Conv" iter (\t -> let v = eval0 (elab t) in pure $ conv0 v v) prog
-  timed "Tree force" iter (pure . force) prog2
-  timed "Tree NF share" iter (pure . force) prog3
-  timed "Tree Conv share" iter (\t -> let v = eval0 (elab t) in pure $ conv0 v v) prog3
+  -- timed "Tree Conv" iter (\t -> let v = eval0 t in pure $ conv0 v v) prog
+  -- timed "Tree force" iter (pure . force) prog2
+  -- timed "Tree NF share" iter (pure . force) prog3
+  -- timed "Tree Conv share" iter (\t -> let v = eval0 t in pure $ conv0 v v) prog3
 
-  timed "Maptree 1/2" iter (\n -> pure $ seq (maptree (mktree n)) ()) 25
-  timed "Maptree 2/3" iter (\n -> pure $ seq (maptree(maptree (mktree n))) ()) 25
-  timed "Maptree 3/4" iter (\n -> pure $ seq (maptree(maptree(maptree (mktree n)))) ()) 25
-  timed "Maptree 4/5" iter (\n -> pure $ seq (maptree(maptree(maptree(maptree(mktree n))))) ()) 25
+  -- timed "Maptree 1/2" iter (\n -> pure $ seq (maptree (mktree n)) ()) mapTreeSize
+  -- timed "Maptree 2/3" iter (\n -> pure $ seq (maptree(maptree (mktree n))) ()) mapTreeSize
+  -- timed "Maptree 3/4" iter (\n -> pure $ seq (maptree(maptree(maptree (mktree n)))) ()) mapTreeSize
+  -- timed "Maptree 4/5" iter (\n -> pure $ seq (maptree(maptree(maptree(maptree(mktree n))))) ()) mapTreeSize
